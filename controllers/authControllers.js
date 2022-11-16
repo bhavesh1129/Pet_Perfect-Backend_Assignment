@@ -5,6 +5,8 @@ const Author = require("../models/authorModel");
 
 // Expiry date(cookies)
 const maxAge = 3 * 24 * 60 * 60;
+
+//Provide your JWT_SECRET here or just create a .env file and add the sensitive info there.
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: maxAge,
