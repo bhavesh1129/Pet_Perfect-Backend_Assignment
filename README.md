@@ -4,7 +4,7 @@
 
 ### Server Architecture Diagram:
 <img src = "./sa.png"></img>
-🔗: https://excalidraw.com/#json=tLZba9IIqwQdaudz1I_Mk,JoaBloWOAx4dE1dLc3k6IA
+Link to SA the diagram file🔗: https://bit.ly/3UXmq4S
 
 
 ## Run the API 
