@@ -1,21 +1,20 @@
 const jwt = require('jsonwebtoken');
-const Author = require('../models/authorModel');
 
-const checkLoggedIn = async (req, res, next) => {
+const checkLoggedIn = async(req, res, next) => {
     try {
-        const header = req.headers["authorization"];
-        const HL = header.split(' ');
-        const token = HL[1];
+        const mainHeader = req.mainHeaders["authorization"];
+        const array = mainHeader.split(' ');
+        const token = array[1];
         if (!token) {
             return res.status(401).json({
                 success: false,
-                msg: "No token found. Please log in again.",
+                msg: "There was no token found, Please try again.❌",
             })
         }
     } catch (err) {
         return res.status(401).json({
             success: false,
-            msg: "No token found. Please log in again.",
+            msg: "There was no token found, Please try again.❌",
         })
     }
     try {
@@ -24,7 +23,7 @@ const checkLoggedIn = async (req, res, next) => {
     } catch (err) {
         res.status(401).json({
             success: false,
-            msg: "Token is not valid. Please log in again.",
+            msg: "Not a valid token, Please try again.❌",
         })
     }
 }

@@ -1,12 +1,10 @@
 const Author = require("../models/authorModel");
 const Book = require("../models/bookModel");
-const jwt = require('jsonwebtoken')
-
 const { getAuthorByToken } = require('../middlewares/getAuthorByToken');
 
-const showBooks = async (req, res, next) => {
+const showBooks = async(req, res) => {
     try {
-        const {page = 1, limit = 5} = req.query
+        const { page = 1, limit = 5 } = req.query
         const book = await Book.find()
             .limit(limit * 1)
             .skip((page - 1) * limit)
@@ -31,7 +29,7 @@ const showBooks = async (req, res, next) => {
     }
 }
 
-const uploadBook = async (req, res, next) => {
+const uploadBook = async(req, res) => {
     try {
         const { title, author: author } = req.body
         let bookTest = await Book.findOne({ title });
@@ -57,7 +55,7 @@ const uploadBook = async (req, res, next) => {
         });
     }
 }
-const updateBook = async (req, res, next) => {
+const updateBook = async(req, res) => {
     try {
         const { id, title, author: author } = req.body
         let book = await Book.findById(id);
@@ -70,8 +68,10 @@ const updateBook = async (req, res, next) => {
             title: title || book.title,
             author: author || book.author,
         })
-        // console.log(new_book)
-        book = await Book.findByIdAndUpdate(id, { title: new_book.title, author: new_book.author });
+        book = await Book.findByIdAndUpdate(id, {
+            title: new_book.title,
+            author: new_book.author
+        });
         res.status(200).send(
             `${title} updated successfully`
         );
@@ -84,14 +84,14 @@ const updateBook = async (req, res, next) => {
     }
 }
 
-const deleteBook = async (req, res, next) => {
+const deleteBook = async(req, res) => {
     try {
         const { id } = req.body
         let book = await Book.findById(id);
         if (!book)
             return res.status(404).send({
                 success: false,
-                msg: "Book Not Found"
+                msg: "No Book Found"
             });
         book = await Book.findByIdAndDelete(id);
         res.status(200).send(
@@ -106,14 +106,14 @@ const deleteBook = async (req, res, next) => {
     }
 }
 
-const likeBook = async (req, res, next) => {
+const likeBook = async(req, res) => {
     try {
         const header = req.headers["authorization"];
         const author_response = await getAuthorByToken(header);
         if (author_response.success == "false") {
             return res.status(403).send({
                 success: false,
-                msg: "Token in Valid, Login Again!"
+                msg: "Token is invalid; please try again!"
             });
         }
         let author = author_response.author;
@@ -122,19 +122,17 @@ const likeBook = async (req, res, next) => {
         if (author.likes.includes(book._id)) {
             return res.status(401).send({
                 success: false,
-                msg: "You Cannot Like the book Twice"
+                msg: "The book cannot be liked twice."
             });
         } else {
-            // console.log(author.likes);
             author.likes.push(book._id);
         }
-        // console.log(author.likes);
         book.likes = book.likes + 1;
         book = await Book.findByIdAndUpdate(book_id, book)
         author = await Author.findByIdAndUpdate(author._id, author);
         return res.status(200).send({
             success: true,
-            msg: "Liked a book"
+            msg: "I enjoyed a book."
         });
     } catch (err) {
         console.log(err)
@@ -145,14 +143,14 @@ const likeBook = async (req, res, next) => {
     }
 }
 
-const unlikeBook = async (req, res, next) => {
+const unlikeBook = async(req, res) => {
     try {
         const header = req.headers["authorization"];
         const author_response = await getAuthorByToken(header);
         if (author_response.success == "false") {
             return res.status(403).send({
                 success: false,
-                msg: "Token in Valid, Login Again!"
+                msg: "Token is invalid; please try again!"
             });
         }
         let author = author_response.author;
@@ -161,7 +159,7 @@ const unlikeBook = async (req, res, next) => {
         if (author.likes.includes(book._id) == false) {
             return res.status(401).send({
                 success: false,
-                msg: "You never liked the book!"
+                msg: "You were never a fan of the book!"
             });
         } else {
             for (var i = 0; i < author.likes.length; i++) {
@@ -170,13 +168,12 @@ const unlikeBook = async (req, res, next) => {
                 }
             }
         }
-        // console.log(author.likes);
         book.likes = book.likes - 1;
         book = await Book.findByIdAndUpdate(book_id, book)
         author = await Author.findByIdAndUpdate(author._id, author);
         return res.status(200).send({
             success: true,
-            msg: "Disliked a book"
+            msg: "A book was disliked."
         });
     } catch (err) {
         console.log(err)
@@ -188,4 +185,11 @@ const unlikeBook = async (req, res, next) => {
 }
 
 
-module.exports = { showBooks, updateBook, deleteBook, uploadBook, likeBook, unlikeBook };
+module.exports = {
+    showBooks,
+    updateBook,
+    deleteBook,
+    uploadBook,
+    likeBook,
+    unlikeBook
+};

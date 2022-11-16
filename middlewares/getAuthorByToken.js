@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
 const Author = require('../models/authorModel');
 
-const getAuthorByToken = async (header) => {
-    const HL = header.split(' ');
-    const token = HL[1];
+const getAuthorByToken = async(mainHeader) => {
+    const array = mainHeader.split(' ');
+    const token = array[1];
     if (!token) {
         return {
             success: false,
-            msg: "No token found. Please log in again.",
+            msg: "There was no token found, Please try again.❌",
         }
     }
     try {
@@ -20,7 +20,7 @@ const getAuthorByToken = async (header) => {
     } catch (err) {
         return {
             success: false,
-            msg: "Token is not valid. Please log in again.",
+            msg: "Not a valid token, Please try again.❌",
         }
     }
 }

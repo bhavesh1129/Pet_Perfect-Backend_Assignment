@@ -1,10 +1,9 @@
-const Author = require("../models/authorModel");
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
 const session = require("sessionstorage")
+const Author = require("../models/authorModel");
 
-
+// Expiry date(cookies)
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -12,21 +11,21 @@ const createToken = (id) => {
     });
 };
 
-const register = async (req, res, next) => {
+const register = async(req, res) => {
     try {
         const { name, email, password, phone_no } = req.body
         let authorTest = await Author.findOne({ email });
         if (authorTest)
             return res.status(401).send({
                 success: false,
-                msg: "Email Already Exists"
+                msg: "Email is already in use."
             });
 
         authorTest = await Author.findOne({ phone_no });
         if (authorTest)
             return res.status(404).send({
                 success: false,
-                msg: "Phone Number already Exists"
+                msg: "There is already the same phone number in use."
             });
 
         const author = new Author({
@@ -38,71 +37,68 @@ const register = async (req, res, next) => {
 
         await author.save();
         res.status(200).send(
-            `${name} registered successfully`
+            `${name} succesfully registered!`
         );
     } catch (err) {
         console.log(err)
         return res.status(500).send({
             success: false,
-            msg: "Error while registering"
+            msg: "An error occurred while registering.❌"
         });
     }
 }
 
-const login = async (req, res, next) => {
+const login = async(req, res, next) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(404).send({
                 success: false,
-                msg: "Email or Password is missing"
+                msg: "There is no email or password."
             });
         }
         const author = await Author.findOne({ email });
-        let isMatch = false;
+        let isPresent = false;
         if (!author) {
-            isMatch = false;
+            isPresent = false;
             return res.status(404).send({
                 success: false,
-                msg: "Author Doesn't Exist"
+                msg: "There is no author."
             });
         } else {
-            isMatch = await bcrypt.compare(password, author.password);
+            isPresent = await bcrypt.compare(password, author.password);
         }
 
-        if (!isMatch) {
+        if (!isPresent) {
             return res.status(400).send({
                 success: false,
-                msg: "Invalid Credentials"
+                msg: "Invalid Identification"
             });
         } else {
             token = createToken(author._id);
             session.setItem("jwt", token);
-            console.log(`${email} logged in`)
+            console.log(`${email} signed in`)
             return res.json({ token: token })
         }
     } catch (err) {
         console.log(err)
         return res.status(500).send({
             success: false,
-            msg: "Internal Server Error"
+            msg: "Error on the Internal Server❌"
         });;
     }
 }
 
-const logout = async (req, res, next) => {
+const logout = async(req, res) => {
     try {
         let token = req.headers["authorization"];
         let author = await Author.exists({ token });
         if (author) {
-            await Author.updateOne(
-                { _id: author._id },
-                {
-                    $set: {
-                        token: null,
-                    },
-                }
-            );
+            await Author.updateOne({ _id: author._id }, {
+                $set: {
+                    token: null,
+                },
+            });
             console.log(`${author._id} logged Out`);
             return res.status(200).send({
                 success: true,

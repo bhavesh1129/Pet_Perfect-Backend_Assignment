@@ -1,6 +1,6 @@
 const { faker } = require('@faker-js/faker');
-const Author = require('../models/authorModel');
-const Book = require('../models/bookModel');
+const Author = require('./models/authorModel');
+const Book = require('./models/bookModel');
 
 function createRandomAuthor() {
     let author = {
@@ -29,15 +29,17 @@ async function seedRandomData(num) {
                 password: "password"
             })
             await author.save();
+            console.log(`Author ${i} created`);
             author = await Author.findOne({ email: rand_author.email });
             id = author._id;
         } catch (err) {
-            console.log("Random Author Creation Failed")
+            console.log("Failed to create a random author❌")
             console.log(err);
             process.exit(0);
         }
         try {
-            for (var i = 0; i < Math.random() * 7; i++) {
+            let j;
+            for (j = 0; j < Math.random() * 7; j++) {
                 let title = createRandomBook();
                 let book = new Book({
                     title: title,
@@ -45,12 +47,13 @@ async function seedRandomData(num) {
                 })
                 await book.save()
             }
+            console.log(`${j} --> Author's published books --> ${i}`);
         } catch (err) {
-            console.log("Random Book Creation Failed", err);
+            console.log("Failed to create a random author❌", err);
             process.exit(0);
         }
     }
-    console.log("New Entries added to the Database")
+    console.log("The Database has been updated with new entries.🥳")
 }
 
 module.exports = { seedRandomData };

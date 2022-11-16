@@ -1,9 +1,9 @@
-// Basic SignUp / Login
-const express = require("express"); 
+//Login / SignUp Basics
+const express = require("express");
 const router = express();
 
 const { isLoggedIn } = require("../middlewares/isLoggedIn");
-const {login, register,logout} = require("../controllers/authControllers")
+const { login, register, logout } = require("../controllers/authControllers")
 
 router.post("/register", register);
 router.post("/login", login);
