@@ -3,13 +3,14 @@
 ### Assignment Link🔗: https://bit.ly/3trGNvh
 
 ## Run the API 
-- Create a new cluster in MongoDB and paste its link the example_env file provided.
-- Rename example_env to .env
-- Now, run the api with the given commands
+- Create a new MongoDB cluster and insert the example env file's URL into it.
+- Change the name of example env to.env.
+- Now, use the provided instructions to launch the API.
+
 ```
 npm install
 npm start
 ```
 
-- 10 random authors and multiple book entries for each author will automatically be created whenever the server starts/restarts. (Using Faker.js)
-- Default password for the randomly generated accounts is "password".
+- When the server starts/restarts, 10 random authors and several book entries for each author will be produced automatically using "Faker.js".
+- The randomly created accounts default password is "password".
