@@ -2,7 +2,8 @@
 
 ### Assignment Link🔗: https://bit.ly/3trGNvh
 
-###Server Arch
+### Server Architecture Diagram:
+<img src = "./sa.png"></img>
 🔗: https://excalidraw.com/#json=tLZba9IIqwQdaudz1I_Mk,JoaBloWOAx4dE1dLc3k6IA
 
 
